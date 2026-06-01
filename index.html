@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1F3A5F">
+<title>Pesquisa: Como você faz seus laudos hoje?</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 0; background: #F2F4F7; color: #1a1a1a;
+    font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .progress-bar { position: sticky; top: 0; left: 0; height: 4px; width: 100%; background: #E5E8EC; z-index: 100; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #1F3A5F, #2E5C8A); width: 0%; transition: width .3s ease; }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 16px 80px; }
+  header { background: linear-gradient(135deg, #1F3A5F 0%, #2E5C8A 100%); color: #fff; padding: 28px 20px 32px; margin: 0 -16px 24px; }
+  header h1 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
+  header .subtitle { font-size: 14px; opacity: .9; line-height: 1.5; }
+  .intro { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 16px; border-left: 4px solid #2E5C8A; }
+  .intro p { margin: 0 0 10px; font-size: 15px; }
+  .intro p:last-child { margin: 0; color: #666; font-style: italic; font-size: 14px; }
+  .section { background: #fff; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; }
+  .section-header { background: #1F3A5F; color: #fff; padding: 14px 18px; font-weight: 700; font-size: 15px; letter-spacing: .3px; }
+  .section-header .badge { background: rgba(255,255,255,.2); padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; }
+  .section-body { padding: 18px; }
+  .question { margin-bottom: 24px; }
+  .question:last-child { margin-bottom: 0; }
+  .question-label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 6px; color: #1a1a1a; line-height: 1.4; }
+  .question-label .num { color: #2E5C8A; margin-right: 4px; }
+  .question-label .req { color: #C8472D; font-weight: 700; }
+  .question-help { font-size: 13px; color: #666; margin-bottom: 10px; font-style: italic; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #F7F8FA; border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all .15s; font-size: 15px; min-height: 48px; }
+  .option:active { background: #EAEEF3; }
+  .option input { margin: 0; flex-shrink: 0; transform: scale(1.2); accent-color: #2E5C8A; }
+  .option input:checked + span { font-weight: 600; }
+  .option:has(input:checked) { background: #E6F0FA; border-color: #2E5C8A; }
+  .input-text, .input-money, .input-textarea { width: 100%; padding: 12px 14px; border: 2px solid #D9DEE5; border-radius: 10px; font-size: 16px; font-family: inherit; background: #fff; transition: border-color .15s; }
+  .input-text:focus, .input-money:focus, .input-textarea:focus { outline: none; border-color: #2E5C8A; }
+  .input-textarea { min-height: 90px; resize: vertical; }
+  .input-money-wrapper { position: relative; }
+  .input-money-wrapper::before { content: "R$"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #666; font-weight: 600; }
+  .input-money { padding-left: 44px; }
+  .ranking-item { display: flex; align-items: center; gap: 10px; background: #F7F8FA; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; }
+  .ranking-item select { width: 64px; padding: 10px 8px; border: 2px solid #D9DEE5; border-radius: 8px; font-size: 16px; font-weight: 600; background: #fff; color: #2E5C8A; text-align: center; flex-shrink: 0; }
+  .ranking-item select:focus { outline: none; border-color: #2E5C8A; }
+  .ranking-item .label { flex: 1; font-size: 14px; line-height: 1.3; }
+  .submit-area { background: #fff; padding: 24px 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-top: 8px; }
+  .submit-area h3 { margin: 0 0 8px; font-size: 17px; color: #1F3A5F; text-align: center; }
+  .submit-area .submit-hint { text-align: center; font-size: 13px; color: #666; margin: 0 0 16px; font-style: italic; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 18px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform .1s, opacity .2s; min-height: 56px; font-family: inherit; width: 100%; }
+  .btn:active { transform: scale(.98); }
+  .btn:disabled { opacity: .6; cursor: not-allowed; }
+  .btn-whatsapp { background: #25D366; color: #fff; }
+  .btn-icon { font-size: 20px; }
+  .status { text-align: center; padding: 12px; margin-top: 12px; border-radius: 8px; font-size: 14px; display: none; }
+  .status.show { display: block; }
+  .status.success { background: #D4EDDA; color: #155724; }
+  .status.error { background: #F8D7DA; color: #721C24; }
+  .status.info { background: #E6F0FA; color: #1F3A5F; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .question.error .question-label { color: #C8472D; }
+  .question.error .options, .question.error .input-text, .question.error .input-textarea, .question.error .ranking-item { border-color: #C8472D; }
+  .question.error::before { content: "Por favor responda esta pergunta"; display: block; background: #FFEBE8; color: #C8472D; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+  footer { text-align: center; padding: 20px; color: #888; font-size: 13px; font-style: italic; }
+  @media (min-width: 600px) { header { padding: 36px 32px 40px; border-radius: 0; } header h1 { font-size: 26px; } .section-body { padding: 24px; } }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="container">
+
+  <header>
+    <h1>Pesquisa: Como você faz seus laudos hoje?</h1>
+    <div class="subtitle">Validação de uma nova ferramenta para profissionais de avaliação imobiliária</div>
+  </header>
+
+  <div class="intro">
+    <p><strong>Olá, colega!</strong> Sou avaliador credenciado e estou desenvolvendo, junto com uma equipe de tecnologia, uma ferramenta que pode acelerar e simplificar a nossa rotina de laudos. Antes de qualquer linha de código, quero ouvir profissionais como você para entender o que realmente faria diferença no dia a dia.</p>
+    <p>Suas respostas vão moldar diretamente o que essa ferramenta será. Leva entre 5 e 7 minutos para responder. Agradeço muito pela colaboração.</p>
+    <p>Suas respostas serão tratadas de forma confidencial e usadas apenas para fins de pesquisa de produto.</p>
+  </div>
+
+  <form id="form" autocomplete="off">
+
+    <div class="section">
+      <div class="section-header"><span class="badge">1 de 5</span>Identificação (OPCIONAL)</div>
+      <div class="section-body">
+        <p style="margin:0 0 16px;color:#666;font-size:14px;font-style:italic;">Todos os campos abaixo são opcionais. Se preferir manter seu anonimato, deixe em branco e avance para a próxima seção.</p>
+        <div class="question"><label class="question-label">Nome</label><input type="text" class="input-text" name="id_nome" autocomplete="name"></div>
+        <div class="question"><label class="question-label">Cidade / Estado</label><input type="text" class="input-text" name="id_cidade"></div>
+        <div class="question"><label class="question-label">Registro profissional (CREA, CAU ou outro)</label><input type="text" class="input-text" name="id_registro"></div>
+        <div class="question"><label class="question-label">E-mail ou WhatsApp para retorno</label><input type="text" class="input-text" name="id_contato"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="badge">2 de 5</span>Perfil Profissional</div>
+      <div class="section-body">
+
+        <div class="question" data-required="true" data-name="p1">
+          <label class="question-label"><span class="num">1.</span>Há quantos anos você atua com avaliação imobiliária? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p1" value="Menos de 2 anos"><span>Menos de 2 anos</span></label>
+            <label class="option"><input type="radio" name="p1" value="Entre 2 e 5 anos"><span>Entre 2 e 5 anos</span></label>
+            <label class="option"><input type="radio" name="p1" value="Entre 5 e 10 anos"><span>Entre 5 e 10 anos</span></label>
+            <label class="option"><input type="radio" name="p1" value="Entre 10 e 20 anos"><span>Entre 10 e 20 anos</span></label>
+            <label class="option"><input type="radio" name="p1" value="Mais de 20 anos"><span>Mais de 20 anos</span></label>
+          </div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p2">
+          <label class="question-label"><span class="num">2.</span>Em média, quantos laudos você emite por mês? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p2" value="Até 5"><span>Até 5</span></label>
+            <label class="option"><input type="radio" name="p2" value="De 6 a 15"><span>De 6 a 15</span></label>
+            <label class="option"><input type="radio" name="p2" value="De 16 a 30"><span>De 16 a 30</span></label>
+            <label class="option"><input type="radio" name="p2" value="De 31 a 50"><span>De 31 a 50</span></label>
+            <label class="option"><input type="radio" name="p2" value="Mais de 50"><span>Mais de 50</span></label>
+          </div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p3" data-multi="true">
+          <label class="question-label"><span class="num">3.</span>Em quais instituições você é credenciado? <span class="req">*</span></label>
+          <div class="question-help">Pode marcar mais de uma opção.</div>
+          <div class="options">
+            <label class="option"><input type="checkbox" name="p3" value="Banco do Brasil"><span>Banco do Brasil</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Caixa Econômica Federal"><span>Caixa Econômica Federal</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Itaú"><span>Itaú</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Bradesco"><span>Bradesco</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Santander"><span>Santander</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Outros bancos"><span>Outros bancos</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Avaliações judiciais"><span>Avaliações judiciais</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Seguradoras"><span>Seguradoras</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Prefeitura / ITBI"><span>Prefeitura / ITBI</span></label>
+            <label class="option"><input type="checkbox" name="p3" value="Particulares"><span>Particulares (PF ou PJ)</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="badge">3 de 5</span>Sua Rotina e Suas Dores</div>
+      <div class="section-body">
+
+        <div class="question" data-required="true" data-name="p4" data-type="ranking">
+          <label class="question-label"><span class="num">4.</span>Numere de 1 (mais rápida) a 5 (mais demorada) as etapas do seu laudo: <span class="req">*</span></label>
+          <div class="question-help">Cada número de 1 a 5 deve ser usado apenas uma vez.</div>
+          <div class="ranking-item"><select name="p4_a"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><div class="label">Vistoria e fotos do imóvel</div></div>
+          <div class="ranking-item"><select name="p4_b"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><div class="label">Coleta de comparativos de mercado</div></div>
+          <div class="ranking-item"><select name="p4_c"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><div class="label">Lançar dados no SisDEA, rodar regressão e achar a equação ideal</div></div>
+          <div class="ranking-item"><select name="p4_d"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><div class="label">Montar e formatar o relatório / laudo</div></div>
+          <div class="ranking-item"><select name="p4_e"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><div class="label">Alimentar a plataforma da instituição contratante</div></div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p5">
+          <label class="question-label"><span class="num">5.</span>Quanto tempo, em média, você leva para encontrar a equação ideal no SisDEA? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p5" value="Até 30 minutos"><span>Até 30 minutos</span></label>
+            <label class="option"><input type="radio" name="p5" value="De 30 minutos a 1 hora"><span>De 30 minutos a 1 hora</span></label>
+            <label class="option"><input type="radio" name="p5" value="De 1 a 2 horas"><span>De 1 a 2 horas</span></label>
+            <label class="option"><input type="radio" name="p5" value="De 2 a 4 horas"><span>De 2 a 4 horas</span></label>
+            <label class="option"><input type="radio" name="p5" value="Mais de 4 horas"><span>Mais de 4 horas</span></label>
+          </div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p6">
+          <label class="question-label"><span class="num">6.</span>Você já entregou laudo com grau de fundamentação MENOR do que gostaria? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p6" value="Sim, frequentemente"><span>Sim, frequentemente</span></label>
+            <label class="option"><input type="radio" name="p6" value="Sim, às vezes"><span>Sim, às vezes</span></label>
+            <label class="option"><input type="radio" name="p6" value="Raramente"><span>Raramente</span></label>
+            <label class="option"><input type="radio" name="p6" value="Nunca"><span>Nunca</span></label>
+          </div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p7" data-multi="true">
+          <label class="question-label"><span class="num">7.</span>Onde você costuma coletar dados de mercado para os comparativos? <span class="req">*</span></label>
+          <div class="question-help">Pode marcar mais de uma opção.</div>
+          <div class="options">
+            <label class="option"><input type="checkbox" name="p7" value="Amostrando"><span>Amostrando</span></label>
+            <label class="option"><input type="checkbox" name="p7" value="ZAP/Viva Real/OLX manualmente"><span>ZAP, Viva Real, OLX — manualmente</span></label>
+            <label class="option"><input type="checkbox" name="p7" value="Contato direto com corretores"><span>Contato direto com corretores</span></label>
+            <label class="option"><input type="checkbox" name="p7" value="Cartórios e ITBI"><span>Cartórios e dados de ITBI</span></label>
+            <label class="option"><input type="checkbox" name="p7" value="Banco de dados próprio"><span>Banco de dados próprio (planilha, sistema interno)</span></label>
+            <label class="option"><input type="checkbox" name="p7" value="Outros"><span>Outros</span></label>
+          </div>
+          <input type="text" class="input-text" name="p7_outros" placeholder="Se marcou Outros, especifique aqui" style="margin-top:10px;">
+        </div>
+
+        <div class="question" data-required="true" data-name="p8">
+          <label class="question-label"><span class="num">8.</span>Em uma frase, o que MAIS te incomoda no seu fluxo de trabalho atual? <span class="req">*</span></label>
+          <div class="question-help">Pode ser sobre o software, a coleta, o portal do banco — o que vier à cabeça.</div>
+          <textarea class="input-textarea" name="p8" placeholder="Sua resposta..."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="badge">4 de 5</span>A Solução Proposta</div>
+      <div class="section-body">
+
+        <div style="background:#FFF9E6;padding:14px 16px;border-radius:10px;margin-bottom:18px;border-left:4px solid #E0B940;">
+          <p style="margin:0 0 8px;font-weight:600;font-size:14px;">Imagine uma ferramenta que faz tudo isso:</p>
+          <p style="margin:0;font-size:14px;line-height:1.6;">
+            • Coleta automaticamente comparativos de mercado da sua região.<br>
+            • Testa todas as combinações de variáveis e transformações por você.<br>
+            • Entrega a melhor equação dentro da NBR 14653 em minutos.<br>
+            • Exporta os dados já prontos para o SisDEA.
+          </p>
+        </div>
+
+        <div class="question" data-required="true" data-name="p9">
+          <label class="question-label"><span class="num">9.</span>Você usaria essa ferramenta? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p9" value="Sim, com certeza"><span>Sim, com certeza</span></label>
+            <label class="option"><input type="radio" name="p9" value="Provavelmente sim"><span>Provavelmente sim</span></label>
+            <label class="option"><input type="radio" name="p9" value="Talvez"><span>Talvez</span></label>
+            <label class="option"><input type="radio" name="p9" value="Provavelmente não"><span>Provavelmente não</span></label>
+            <label class="option"><input type="radio" name="p9" value="Não"><span>Não</span></label>
+          </div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p10">
+          <label class="question-label"><span class="num">10.</span>Qual valor mensal seria tão BARATO que você desconfiaria da qualidade? <span class="req">*</span></label>
+          <div class="input-money-wrapper"><input type="number" inputmode="numeric" min="0" step="1" class="input-money" name="p10" placeholder="0"></div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p11">
+          <label class="question-label"><span class="num">11.</span>Qual valor mensal você consideraria CARO, mas justo pelo valor entregue? <span class="req">*</span></label>
+          <div class="input-money-wrapper"><input type="number" inputmode="numeric" min="0" step="1" class="input-money" name="p11" placeholder="0"></div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p12">
+          <label class="question-label"><span class="num">12.</span>Qual valor mensal seria CARO DEMAIS para sequer considerar? <span class="req">*</span></label>
+          <div class="input-money-wrapper"><input type="number" inputmode="numeric" min="0" step="1" class="input-money" name="p12" placeholder="0"></div>
+        </div>
+
+        <div class="question" data-required="true" data-name="p13">
+          <label class="question-label"><span class="num">13.</span>Como você preferiria pagar por essa ferramenta? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p13" value="Mensalidade fixa"><span>Mensalidade fixa (com laudos ilimitados ou amplo limite)</span></label>
+            <label class="option"><input type="radio" name="p13" value="Por laudo gerado"><span>Pagamento por laudo gerado</span></label>
+            <label class="option"><input type="radio" name="p13" value="Pacote de laudos"><span>Pacote de laudos (ex.: 10 ou 20 laudos por mês)</span></label>
+            <label class="option"><input type="radio" name="p13" value="Tanto faz"><span>Tanto faz, desde que valha a pena</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="badge">5 de 5</span>Próximos Passos</div>
+      <div class="section-body">
+
+        <div class="question" data-required="true" data-name="p14">
+          <label class="question-label"><span class="num">14.</span>Aceita receber acesso antecipado ao protótipo em troca de feedback? <span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="p14" value="Sim, me avise"><span>Sim, me avise quando estiver pronto</span></label>
+            <label class="option"><input type="radio" name="p14" value="Talvez mais para frente"><span>Talvez, mais para frente</span></label>
+            <label class="option"><input type="radio" name="p14" value="Não, obrigado"><span>Não, obrigado</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Se respondeu "sim" e ainda não preencheu seu contato no início, deixe aqui:</label>
+          <input type="text" class="input-text" name="p14_contato">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <h3>Tudo pronto!</h3>
+      <p class="submit-hint">Toque no botão abaixo. O WhatsApp vai abrir com suas respostas — basta enviar.</p>
+      <button type="button" class="btn btn-whatsapp" id="btn-enviar">
+        Enviar
+      </button>
+      <div class="status" id="status"></div>
+    </div>
+
+  </form>
+
+  <footer>Sua contribuição ajuda a construir uma ferramenta feita por avaliador, para avaliador.</footer>
+
+</div>
+
+<script>
+  // =====================================================================
+  // CONFIGURAÇÃO — EDITE ESTAS DUAS LINHAS ANTES DE DISTRIBUIR
+  // =====================================================================
+
+  // Seu WhatsApp no formato: 55 + DDD + número (sem espaços/símbolos)
+  // Exemplo: "5511999998888"
+  const WHATSAPP_DESTINO = "5500000000000";
+
+  // URL do Web App publicado no Google Apps Script
+  // Instruções pra obter: arquivo apps_script.gs
+  // Exemplo: "https://script.google.com/macros/s/AKfycb.../exec"
+  const SHEETS_WEBHOOK_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
+
+  // =====================================================================
+
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  const form = document.getElementById('form');
+  const STORAGE_KEY = 'pesquisa_avalion_v1';
+
+  function saveLocal() {
+    const data = {};
+    new FormData(form).forEach((v, k) => {
+      if (data[k]) { if (Array.isArray(data[k])) data[k].push(v); else data[k] = [data[k], v]; }
+      else data[k] = v;
+    });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  function loadLocal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      Object.entries(data).forEach(([k, v]) => {
+        const values = Array.isArray(v) ? v : [v];
+        values.forEach(val => {
+          const el = form.querySelector(`[name="${k}"][value="${val}"]`);
+          if (el) el.checked = true;
+          else {
+            const inp = form.querySelector(`[name="${k}"]`);
+            if (inp && (inp.type === 'text' || inp.tagName === 'TEXTAREA' || inp.type === 'number')) inp.value = val;
+            else if (inp && inp.tagName === 'SELECT') inp.value = val;
+          }
+        });
+      });
+    } catch(e) {}
+  }
+  loadLocal();
+  form.addEventListener('change', saveLocal);
+  form.addEventListener('input', saveLocal);
+
+  function coletar() {
+    const fd = new FormData(form);
+    const r = {};
+    fd.forEach((v, k) => {
+      if (r[k]) { if (Array.isArray(r[k])) r[k].push(v); else r[k] = [r[k], v]; }
+      else r[k] = v;
+    });
+    return r;
+  }
+
+  function validar() {
+    let ok = true;
+    let primeiroErro = null;
+    document.querySelectorAll('.question').forEach(q => q.classList.remove('error'));
+    document.querySelectorAll('.question[data-required="true"]').forEach(q => {
+      const nome = q.dataset.name;
+      const tipo = q.dataset.type;
+      let preenchido = false;
+      if (tipo === 'ranking') {
+        const selects = q.querySelectorAll('select');
+        const valores = Array.from(selects).map(s => s.value).filter(v => v);
+        preenchido = valores.length === selects.length && new Set(valores).size === valores.length;
+      } else {
+        const inputs = q.querySelectorAll(`[name="${nome}"]`);
+        inputs.forEach(i => {
+          if (i.type === 'radio' || i.type === 'checkbox') { if (i.checked) preenchido = true; }
+          else if (i.value && i.value.trim() !== '') preenchido = true;
+        });
+      }
+      if (!preenchido) {
+        q.classList.add('error');
+        if (!primeiroErro) primeiroErro = q;
+        ok = false;
+      }
+    });
+    if (primeiroErro) primeiroErro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return ok;
+  }
+
+  function formatarTexto() {
+    const r = coletar();
+    const linha = (label, valor) => valor ? `${label}: ${Array.isArray(valor) ? valor.join('; ') : valor}` : null;
+    const partes = [
+      '*PESQUISA — Como você faz seus laudos hoje?*', '',
+      '*IDENTIFICAÇÃO*',
+      linha('Nome', r.id_nome),
+      linha('Cidade/UF', r.id_cidade),
+      linha('Registro', r.id_registro),
+      linha('Contato', r.id_contato), '',
+      '*PERFIL*',
+      linha('1. Anos de atuação', r.p1),
+      linha('2. Laudos/mês', r.p2),
+      linha('3. Instituições credenciadas', r.p3), '',
+      '*ROTINA E DORES*',
+      '4. Ranking das etapas:',
+      `   ${r.p4_a || '-'} → Vistoria e fotos`,
+      `   ${r.p4_b || '-'} → Coleta de comparativos`,
+      `   ${r.p4_c || '-'} → SisDEA / regressão / equação`,
+      `   ${r.p4_d || '-'} → Formatar relatório`,
+      `   ${r.p4_e || '-'} → Alimentar plataforma do banco`,
+      linha('5. Tempo até achar equação', r.p5),
+      linha('6. Já entregou fundamentação menor', r.p6),
+      linha('7. Fontes de comparativos', r.p7),
+      linha('7b. Outras fontes', r.p7_outros),
+      linha('8. O que mais incomoda', r.p8), '',
+      '*SOBRE A SOLUÇÃO*',
+      linha('9. Usaria a ferramenta', r.p9),
+      linha('10. Valor BARATO demais (R$)', r.p10),
+      linha('11. Valor JUSTO (R$)', r.p11),
+      linha('12. Valor CARO DEMAIS (R$)', r.p12),
+      linha('13. Modelo de cobrança preferido', r.p13), '',
+      '*PRÓXIMOS PASSOS*',
+      linha('14. Acesso antecipado', r.p14),
+      linha('Contato para retorno', r.p14_contato)
+    ].filter(x => x !== null);
+    return partes.join('\n');
+  }
+
+  function showStatus(msg, tipo) {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = 'status show ' + tipo;
+  }
+
+  async function salvarNoSheets(dados) {
+    if (!SHEETS_WEBHOOK_URL || SHEETS_WEBHOOK_URL.includes("COLE_AQUI")) {
+      console.warn("SHEETS_WEBHOOK_URL não configurado.");
+      return false;
+    }
+    try {
+      await fetch(SHEETS_WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          ...dados,
+          _timestamp: new Date().toISOString(),
+          _userAgent: navigator.userAgent
+        })
+      });
+      return true;
+    } catch(e) {
+      console.error("Falha ao salvar:", e);
+      return false;
+    }
+  }
+
+  document.getElementById('btn-enviar').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    if (!validar()) {
+      showStatus('Algumas perguntas ficaram em branco. Role para cima e complete.', 'error');
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Salvando suas respostas...';
+    showStatus('Salvando...', 'info');
+
+    const dados = coletar();
+    await salvarNoSheets(dados);
+
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+
+    showStatus('✓ Salvo! Abrindo WhatsApp...', 'success');
+    btn.innerHTML = 'Concluindo envio...';
+
+    setTimeout(() => {
+      const texto = encodeURIComponent(formatarTexto());
+      const url = `https://wa.me/${WHATSAPP_DESTINO}?text=${texto}`;
+      window.location.href = url;
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Enviar';
+      }, 3000);
+    }, 800);
+  });
+</script>
+
+</body>
+</html>
