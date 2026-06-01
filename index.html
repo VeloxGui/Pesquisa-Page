@@ -66,6 +66,7 @@
   .question.error .question-label { color: #C8472D; }
   .question.error .options, .question.error .input-text, .question.error .input-textarea, .question.error .ranking-item { border-color: #C8472D; }
   .question.error::before { content: "Por favor responda esta pergunta"; display: block; background: #FFEBE8; color: #C8472D; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+  .question[data-type="ranking"].error::before { content: "Numere todas as 5 etapas usando os números 1, 2, 3, 4 e 5 — cada número uma única vez."; }
   footer { text-align: center; padding: 20px; color: #888; font-size: 13px; font-style: italic; }
   @media (min-width: 600px) { header { padding: 36px 32px 40px; border-radius: 0; } header h1 { font-size: 26px; } .section-body { padding: 24px; } }
 </style>
